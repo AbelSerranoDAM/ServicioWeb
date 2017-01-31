@@ -48,18 +48,33 @@ public class Conexion {
         return (res == 1);
     }
 
-//    public List<Posiciones> obtenerPosiciones() throws SQLException {
-//        ResultSet rset;
-//        List<Posiciones> posiciones = new ArrayList();
-//        String sql = "SELECT matricula, posX, posY, fecha FROM posiciones";
-//        PreparedStatement stmt = getConnection().prepareStatement(sql);
-//        rset = stmt.executeQuery();
-//        while (rset.next()) {
-//            posiciones.add(new Posicion(rset.getString("matricula"), rset.getInt("posX"), rset.getInt("posY"), rset.getString("fecha")));
-//        }
-//        finalizarConexion();
-//        return posiciones;
-//    }
+    public List<Posicion> obtenerPosiciones() throws SQLException {
+        ResultSet rset;
+        List<Posicion> posiciones = new ArrayList();
+        String sql = "SELECT matricula, posX, posY, fecha FROM posiciones";
+        PreparedStatement stmt = getConnection().prepareStatement(sql);
+        rset = stmt.executeQuery();
+        while (rset.next()) {
+            posiciones.add(new Posicion(rset.getString("matricula"), rset.getInt("posX"), rset.getInt("posY"), rset.getString("fecha")));
+        }
+        finalizarConexion();
+        return posiciones;
+    }
+
+    public List<Posicion> obtenerPosiciones(String matricula) throws SQLException {
+        ResultSet rset;
+        List<Posicion> posiciones = new ArrayList();
+        String sql = "SELECT matricula, posX, posY, fecha FROM posiciones WHERE matricula = ?";
+        PreparedStatement stmt = getConnection().prepareStatement(sql);
+        stmt.setString(1, matricula);
+        rset = stmt.executeQuery();
+        while (rset.next()) {
+            posiciones.add(new Posicion(rset.getString("matricula"), rset.getInt("posX"), rset.getInt("posY"), rset.getString("fecha")));
+        }
+        finalizarConexion();
+        return posiciones;
+    }
+
     public Posicion obtenerPosicion(String matricula) throws SQLException {
         Posicion pos = null;
 

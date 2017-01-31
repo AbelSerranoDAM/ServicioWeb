@@ -5,6 +5,7 @@ import bd.Conexion;
 import bd.Posicion;
 import com.google.gson.Gson;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,6 +43,7 @@ public class GenericResource {
      * @return an instance of java.lang.String
      */
     @GET
+    @Path("autobuses")
     @Produces(MediaType.APPLICATION_JSON)
     public String listarAutobuses() {
 
@@ -63,6 +65,7 @@ public class GenericResource {
      * @param content representation for the resource
      */
     @PUT
+     @Path("insertarPosicion")
     @Consumes(MediaType.APPLICATION_JSON)
     public boolean insertarPosicion(String pos) {
         Conexion conexion = new Conexion();
@@ -81,7 +84,7 @@ public class GenericResource {
     }
 
     @GET
-    @Path("matricula/{matricula}")
+    @Path("obtenerUltimaPosicion/{matricula}")
     @Produces(MediaType.APPLICATION_JSON)
     public String mostrarPosicion(@PathParam("matricula") String matricula) {
         Posicion pos = null;
@@ -96,7 +99,24 @@ public class GenericResource {
         return gson.toJson(pos);
     }
 
+    @GET
+    @Path("obtenerPosiciones/{matricula}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String mostrarPosiciones(@PathParam("matricula") String matricula) {
+        List<Posicion> posiciones = null;
+        Conexion conexion = new Conexion();
+        try {
+            posiciones = conexion.obtenerPosiciones(matricula);
+        } catch (SQLException ex) {
+            Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Gson gson = new Gson();
+
+        return gson.toJson(posiciones);
+    }
+
     @POST
+     
     @Consumes(MediaType.APPLICATION_JSON)
     public boolean actualizarPosicion(String pos) {
         Conexion conexion = new Conexion();
