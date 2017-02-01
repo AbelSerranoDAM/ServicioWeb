@@ -5,7 +5,6 @@ import bd.Conexion;
 import bd.Posicion;
 import com.google.gson.Gson;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * REST Web Service
  *
- * @author Lluis_2
+ * @author yo
  */
 @Path("generic")
 public class GenericResource {
@@ -62,10 +61,9 @@ public class GenericResource {
     /**
      * PUT method for updating or creating an instance of GenericResource
      *
-     * @param content representation for the resource
      */
     @PUT
-     @Path("insertarPosicion")
+    @Path("insertarPosicion")
     @Consumes(MediaType.APPLICATION_JSON)
     public boolean insertarPosicion(String pos) {
         Conexion conexion = new Conexion();
@@ -75,7 +73,7 @@ public class GenericResource {
         boolean result = true;
         try {
 
-            conexion.insertarPosiciones(posicion);
+            conexion.insertarPosicion(posicion);
         } catch (SQLException ex) {
             Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
             result = false;
@@ -83,6 +81,27 @@ public class GenericResource {
         return result;
     }
 
+    /*@PUT
+    @Path("insertarPosiciones")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public boolean insertarPosiciones(ArrayList<Posicion> posiciones) {
+        Conexion conexion = new Conexion();
+        Gson gson = new Gson();
+        Posicion posicion;
+        for (int i = 0; i < posiciones.size(); i++) {
+            posicion = gson.fromJson(posiciones.get(i), Posicion.class);
+        }
+       
+        boolean result = true;
+        try {
+
+            conexion.insertarPosicion(posicion);
+        } catch (SQLException ex) {
+            Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
+            result = false;
+        }
+        return result;
+    }*/
     @GET
     @Path("obtenerUltimaPosicion/{matricula}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -90,7 +109,7 @@ public class GenericResource {
         Posicion pos = null;
         Conexion conexion = new Conexion();
         try {
-            pos = conexion.obtenerPosicion(matricula);
+            pos = conexion.obtenerUltimaPosicion(matricula);
         } catch (SQLException ex) {
             Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -100,13 +119,30 @@ public class GenericResource {
     }
 
     @GET
-    @Path("obtenerPosiciones/{matricula}")
+    @Path("obtenerPosiciones/{matricula}/{fecha}/{fecha}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String mostrarPosiciones(@PathParam("matricula") String matricula) {
+    public String mostrarPosiciones(@PathParam("matricula") String matricula, @PathParam("fecha") String fecha_inicio,
+            @PathParam("fecha") String fecha_fin) {
         List<Posicion> posiciones = null;
         Conexion conexion = new Conexion();
         try {
-            posiciones = conexion.obtenerPosiciones(matricula);
+            posiciones = conexion.obtenerPosiciones(matricula, fecha_inicio, fecha_fin);
+        } catch (SQLException ex) {
+            Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Gson gson = new Gson();
+
+        return gson.toJson(posiciones);
+    }
+
+    @GET
+    @Path("obtenerTodasPosiciones")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String mostrarPosiciones() {
+        List<Posicion> posiciones = null;
+        Conexion conexion = new Conexion();
+        try {
+            posiciones = conexion.obtenerPosiciones();
         } catch (SQLException ex) {
             Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -116,7 +152,7 @@ public class GenericResource {
     }
 
     @POST
-     
+
     @Consumes(MediaType.APPLICATION_JSON)
     public boolean actualizarPosicion(String pos) {
         Conexion conexion = new Conexion();
@@ -133,7 +169,6 @@ public class GenericResource {
         }
         return result;
     }
-
 //    @DELETE
 //    @Path("/delete/{id}")
 //
