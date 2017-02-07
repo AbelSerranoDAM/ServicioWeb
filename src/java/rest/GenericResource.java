@@ -119,10 +119,10 @@ public class GenericResource {
     }
 
     @GET
-    @Path("obtenerPosiciones/{matricula}/{fecha}/{fecha}")
+    @Path("obtenerPosiciones/{matricula}/{fechaInicio}/{fechaFin}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String mostrarPosiciones(@PathParam("matricula") String matricula, @PathParam("fecha") String fecha_inicio,
-            @PathParam("fecha") String fecha_fin) {
+    public String mostrarPosiciones(@PathParam("matricula") String matricula, @PathParam("fechaInicio") String fecha_inicio,
+            @PathParam("fechaFin") String fecha_fin) {
         List<Posicion> posiciones = null;
         Conexion conexion = new Conexion();
         try {
@@ -132,6 +132,20 @@ public class GenericResource {
         }
         Gson gson = new Gson();
 
+        return gson.toJson(posiciones);
+    }
+     @GET
+    @Path("obtenerUltimasPosicionesTodos")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String mostrarUltimasPosicionesTodos() {
+        List<Posicion> posiciones = null;
+        Conexion conexion = new Conexion();
+        try {
+            posiciones = conexion.obtenerUltimaPosicionTodos();
+        } catch (SQLException ex) {
+            Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Gson gson = new Gson();
         return gson.toJson(posiciones);
     }
 
