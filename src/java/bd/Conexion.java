@@ -37,7 +37,7 @@ public class Conexion {
     }
 
     public boolean insertarPosicion(Posicion pos) throws SQLException {
-        String sql = "INSERT INTO posiciones (matricula, posX, posY, fecha) VALUES (?, ?, ?, TO_DATE(?, 'dd/mm/yyyy hh24:mi:ss'))";
+        String sql = "INSERT INTO posiciones (matricula, posX, posY, fecha) VALUES (?, ?, ?, TO_DATE(?, 'dd-mm-yyyy hh24:mi:ss'))";
         PreparedStatement stmt = connection.prepareStatement(sql);
         stmt.setString(1, pos.getMatricula()); //stmt.setString(1, cli.getNombre);
         stmt.setInt(2, pos.getPosX());
@@ -65,7 +65,7 @@ public class Conexion {
     public List<Posicion> obtenerPosiciones() throws SQLException {
         ResultSet rset;
         List<Posicion> posiciones = new ArrayList();
-        String sql = "SELECT matricula, posX, posY, fecha FROM posiciones";
+        String sql = "SELECT matricula, posX, posY, TO_CHAR(fecha, 'dd-mm-yyyy hh24:mi:ss') fecha  FROM posiciones";
         PreparedStatement stmt = getConnection().prepareStatement(sql);
         rset = stmt.executeQuery();
         while (rset.next()) {
@@ -78,8 +78,8 @@ public class Conexion {
     public List<Posicion> obtenerPosiciones(String matricula, String fecha_inicio, String fecha_fin) throws SQLException {
         ResultSet rset;
         List<Posicion> posiciones = new ArrayList();
-        String sql = "SELECT matricula, posX, posY, fecha FROM posiciones WHERE matricula = ? AND fecha BETWEEN  TO_DATE(?, 'dd/mm/yyyy hh24:mi:ss')"
-                + " AND  TO_DATE(?, 'dd/mm/yyyy hh24:mi:ss')";
+        String sql = "SELECT matricula, posX, posY, TO_CHAR(fecha, 'dd-mm-yyyy hh24:mi:ss') fecha FROM posiciones WHERE matricula = ? AND fecha BETWEEN TO_DATE(?, 'dd/mm/yyyy hh24:mi:ss')"
+                + " AND TO_DATE(?, 'dd-mm-yyyy hh24:mi:ss')";
         PreparedStatement stmt = getConnection().prepareStatement(sql);
         stmt.setString(1, matricula);
         stmt.setString(2, fecha_inicio);
@@ -108,6 +108,21 @@ public class Conexion {
         }
         finalizarConexion();
         return pos;
+
+    }
+
+    public List<Posicion> obtenerUltimaPosicionTodos() throws SQLException {
+        List<Posicion> posiciones = new ArrayList();
+        ResultSet rset;
+        String sql = "SELECT * FROM posiciones WHERE (matricula, fecha) IN (SELECT matricula, MAX(fecha) FROM posiciones "
+                + "GROUP BY matricula)";
+        PreparedStatement stmt = getConnection().prepareStatement(sql);
+        rset = stmt.executeQuery();
+        while (rset.next()) {
+            posiciones.add(new Posicion(rset.getString("matricula"), rset.getInt("posX"), rset.getInt("posY"), rset.getString("fecha")));
+        }
+        finalizarConexion();
+        return posiciones;
 
     }
 
