@@ -18,8 +18,8 @@ public class Conexion {
     public Conexion() {
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
-            connection = DriverManager.getConnection("jdbc:oracle:thin:@192.168.180.10:1521:INSLAFERRERI", "ASERRANO", "bucleanidado");
-            // connection = DriverManager.getConnection("jdbc:oracle:thin:@ieslaferreria.xtec.cat:8081:INSLAFERRERI", "PROFEA1","1234");
+            //connection = DriverManager.getConnection("jdbc:oracle:thin:@192.168.180.10:1521:INSLAFERRERI", "ASERRANO", "bucleanidado");
+             connection = DriverManager.getConnection("jdbc:oracle:thin:@ieslaferreria.xtec.cat:8081:INSLAFERRERI", "ASERRANO","bucleanidado");
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
@@ -40,8 +40,8 @@ public class Conexion {
         String sql = "INSERT INTO posiciones (matricula, posX, posY, fecha) VALUES (?, ?, ?, TO_DATE(?, 'dd-mm-yyyy hh24:mi:ss'))";
         PreparedStatement stmt = connection.prepareStatement(sql);
         stmt.setString(1, pos.getMatricula()); //stmt.setString(1, cli.getNombre);
-        stmt.setInt(2, pos.getPosX());
-        stmt.setInt(3, pos.getPosY());
+        stmt.setDouble(2, pos.getPosX());
+        stmt.setDouble(3, pos.getPosY());
         stmt.setString(4, pos.getFecha());
         int res = stmt.executeUpdate();
         finalizarConexion();
@@ -130,8 +130,8 @@ public class Conexion {
         boolean result;
         String sql = "UPDATE posiciones SET posX = ?, posY = ? WHERE matricula = ?";
         PreparedStatement stmt = connection.prepareStatement(sql);
-        stmt.setInt(1, pos.getPosX()); //stmt.setString(1, cli.getNombre);
-        stmt.setInt(2, pos.getPosY());
+        stmt.setDouble(1, pos.getPosX()); //stmt.setString(1, cli.getNombre);
+        stmt.setDouble(2, pos.getPosY());
         stmt.setString(3, pos.getMatricula());
 
         int res = stmt.executeUpdate();
