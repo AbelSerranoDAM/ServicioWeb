@@ -44,6 +44,7 @@ public class Conexion {
         stmt.setDouble(3, pos.getPosY());
         stmt.setString(4, pos.getFecha());
         int res = stmt.executeUpdate();
+        System.out.println(stmt.toString());
         finalizarConexion();
         return (res == 1);
     }
