@@ -3,11 +3,11 @@ package bd;
 public class Posicion {
 
     private String matricula;
-    private int posX;
-    private int posY;
+    private double posX;
+    private double posY;
     private String fecha;
 
-    public Posicion(String matricula, int posX, int posY, String fecha) {
+    public Posicion(String matricula, double posX, double posY, String fecha) {
         this.matricula = matricula;
         this.posX = posX;
         this.posY = posY;
@@ -21,11 +21,11 @@ public class Posicion {
         return matricula;
     }
 
-    public int getPosX() {
+    public double getPosX() {
         return posX;
     }
 
-    public int getPosY() {
+    public double getPosY() {
         return posY;
     }
 
