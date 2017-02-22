@@ -18,8 +18,8 @@ public class Conexion {
     public Conexion() {
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
-            //connection = DriverManager.getConnection("jdbc:oracle:thin:@192.168.180.10:1521:INSLAFERRERI", "ASERRANO", "bucleanidado");
-             connection = DriverManager.getConnection("jdbc:oracle:thin:@ieslaferreria.xtec.cat:8081:INSLAFERRERI", "ASERRANO","bucleanidado");
+            connection = DriverManager.getConnection("jdbc:oracle:thin:@192.168.180.10:1521:INSLAFERRERI", "ASERRANO", "bucleanidado");
+             //connection = DriverManager.getConnection("jdbc:oracle:thin:@ieslaferreria.xtec.cat:8081:INSLAFERRERI", "ASERRANO","bucleanidado");
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -35,7 +35,7 @@ public class Conexion {
     }
 
     public boolean insertarPosicion(Posicion pos) throws SQLException {
-        String sql = "INSERT INTO posiciones (matricula, posX, posY, fecha) VALUES (?, ?, ?, TO_DATE(?, 'dd-mm-yyyy hh24:mi:ss'))";
+        String sql = "INSERT INTO posiciones (matricula, posX, posY, fecha) VALUES (?, ?, ?, TO_DATE(?, 'dd-mm-yyyy-hh24:mi:ss'))";
         PreparedStatement stmt = connection.prepareStatement(sql);
         stmt.setString(1, pos.getMatricula()); //stmt.setString(1, cli.getNombre);
         stmt.setDouble(2, pos.getPosX());
@@ -64,11 +64,11 @@ public class Conexion {
     public List<Posicion> obtenerPosiciones() throws SQLException {
         ResultSet rset;
         List<Posicion> posiciones = new ArrayList();
-        String sql = "SELECT matricula, posX, posY, TO_CHAR(fecha, 'dd-mm-yyyy hh24:mi:ss') fecha  FROM posiciones";
+        String sql = "SELECT matricula, posX, posY, TO_CHAR(fecha, 'dd-mm-yyyy-hh24:mi:ss') fecha  FROM posiciones";
         PreparedStatement stmt = getConnection().prepareStatement(sql);
         rset = stmt.executeQuery();
         while (rset.next()) {
-            posiciones.add(new Posicion(rset.getString("matricula"), rset.getInt("posX"), rset.getInt("posY"), rset.getString("fecha")));
+            posiciones.add(new Posicion(rset.getString("matricula"), rset.getDouble("posX"), rset.getDouble("posY"), rset.getString("fecha")));
         }
         finalizarConexion();
         return posiciones;
@@ -77,7 +77,7 @@ public class Conexion {
     public List<Posicion> obtenerPosiciones(String matricula, String fecha_inicio, String fecha_fin) throws SQLException {
         ResultSet rset;
         List<Posicion> posiciones = new ArrayList();
-        String sql = "SELECT matricula, posX, posY, TO_CHAR(fecha, 'dd-mm-yyyy hh24:mi:ss') fecha FROM posiciones WHERE matricula = ? AND fecha BETWEEN TO_DATE(?, 'dd/mm/yyyy hh24:mi:ss')"
+        String sql = "SELECT matricula, posX, posY, TO_CHAR(fecha, 'dd-mm-yyyy-hh24:mi:ss') fecha FROM posiciones WHERE matricula = ? AND fecha BETWEEN TO_DATE(?, 'dd/mm/yyyy hh24:mi:ss')"
                 + " AND TO_DATE(?, 'dd-mm-yyyy hh24:mi:ss')";
         PreparedStatement stmt = getConnection().prepareStatement(sql);
         stmt.setString(1, matricula);
@@ -85,7 +85,7 @@ public class Conexion {
         stmt.setString(3, fecha_fin);
         rset = stmt.executeQuery();
         while (rset.next()) {
-            posiciones.add(new Posicion(rset.getString("matricula"), rset.getInt("posX"), rset.getInt("posY"), rset.getString("fecha")));
+            posiciones.add(new Posicion(rset.getString("matricula"), rset.getDouble("posX"), rset.getDouble("posY"), rset.getString("fecha")));
         }
         finalizarConexion();
         return posiciones;
@@ -103,7 +103,7 @@ public class Conexion {
         stmt.setString(2, matricula);
         rset = stmt.executeQuery();
         while (rset.next()) {
-            pos = new Posicion(rset.getString("matricula"), rset.getInt("posX"), rset.getInt("posY"), rset.getString("fecha"));
+            pos = new Posicion(rset.getString("matricula"), rset.getDouble("posX"), rset.getDouble("posY"), rset.getString("fecha"));
         }
         finalizarConexion();
         return pos;
@@ -118,7 +118,7 @@ public class Conexion {
         PreparedStatement stmt = getConnection().prepareStatement(sql);
         rset = stmt.executeQuery();
         while (rset.next()) {
-            posiciones.add(new Posicion(rset.getString("matricula"), rset.getInt("posX"), rset.getInt("posY"), rset.getString("fecha")));
+            posiciones.add(new Posicion(rset.getString("matricula"), rset.getDouble("posX"), rset.getDouble("posY"), rset.getString("fecha")));
         }
         finalizarConexion();
         return posiciones;

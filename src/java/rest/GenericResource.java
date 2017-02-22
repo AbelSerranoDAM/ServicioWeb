@@ -110,6 +110,7 @@ public class GenericResource {
         Conexion conexion = new Conexion();
         try {
             pos = conexion.obtenerUltimaPosicion(matricula);
+            Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE,pos.toString());
         } catch (SQLException ex) {
             Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
         }

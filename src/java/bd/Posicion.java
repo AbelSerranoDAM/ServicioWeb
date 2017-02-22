@@ -33,4 +33,9 @@ public class Posicion {
         return fecha;
     }
 
+    @Override
+    public String toString() {
+        return "Posicion{" + "matricula=" + matricula + ", posX=" + posX + ", posY=" + posY + ", fecha=" + fecha + '}';
+    }
+
 }
